@@ -8,13 +8,12 @@ Twenty's `/open-api/core` spec via
 ## About Twenty
 
 [Twenty](https://github.com/twentyhq/twenty) is an open-source CRM
-(GPL-licensed core) — a modern alternative to Salesforce/HubSpot that you can
-self-host. It ships a REST API (documented per-workspace at
+(AGPL-3.0-licensed core) — a modern alternative to Salesforce/HubSpot that
+you can self-host. It ships a REST API (documented per-workspace at
 `/open-api/core`) and long-lived workspace API keys, which is what this MCP
 server is generated from. See [twenty.com](https://twenty.com) for hosted
 options and [docs](https://twenty.com/developers) for developer
-documentation. This project is not affiliated with or endorsed by Twenty —
-it's an independent integration.
+documentation.
 
 ## What's in here
 
@@ -108,3 +107,14 @@ cd server && npm install && npm run build
   no extra workspace/organization header is required per request.
 - **Spec patching**: Twenty already publishes `servers` and `securitySchemes`
   in its OpenAPI, so the spec works with the generator unmodified.
+
+## License
+
+Licensed under the [Apache License, Version 2.0](LICENSE).
+
+This project is an independent, community-maintained integration. It is not
+affiliated with, endorsed by, or supported by Twenty. Twenty is a separate
+project licensed under AGPL-3.0; this server communicates with it only over
+its public API and contains no Twenty source code.
+
+Copyright 2026 OutcomeAI.Io

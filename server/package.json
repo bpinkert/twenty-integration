@@ -1,6 +1,7 @@
 {
   "name": "twenty-mcp",
   "version": "v0.1",
+  "license": "Apache-2.0",
   "description": "MCP Server generated from OpenAPI spec for twenty-mcp",
   "private": true,
   "type": "module",
