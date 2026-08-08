@@ -1,7 +1,0 @@
-{
-  "mcpServers": {
-    "twenty": {
-      "command": "/home/bpinkert/PycharmProjects/twenty-integration/server/run.sh"
-    }
-  }
-}

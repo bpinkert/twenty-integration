@@ -47,7 +47,7 @@ interface McpToolDefinition {
 export const SERVER_NAME = "twenty-mcp";
 export const SERVER_VERSION = "v0.1";
 // Base URL for the API, can be set via environment variable or determined from OpenAPI spec
-export const API_BASE_URL = process.env.API_BASE_URL || "http://192.168.50.193:3000/rest";
+export const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:3000/rest";
 console.error("API_BASE_URL is set to:", API_BASE_URL);
 
 /**

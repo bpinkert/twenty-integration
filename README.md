@@ -1,12 +1,20 @@
-# Twenty CRM MCP Integration
+# Twenty CRM MCP Server
 
 A Model Context Protocol (MCP) server exposing Twenty CRM's REST API as tools
 usable from Claude Desktop, Claude Code, or any MCP client. Generated from
 Twenty's `/open-api/core` spec via
 [openapi-mcp-generator](https://github.com/harsha-iiiv/openapi-mcp-generator).
 
-Sibling of [bigcapital-integration](../bigcapital-integration) — same shape,
-simpler auth (Twenty uses long-lived workspace API keys with no refresh).
+## About Twenty
+
+[Twenty](https://github.com/twentyhq/twenty) is an open-source CRM
+(GPL-licensed core) — a modern alternative to Salesforce/HubSpot that you can
+self-host. It ships a REST API (documented per-workspace at
+`/open-api/core`) and long-lived workspace API keys, which is what this MCP
+server is generated from. See [twenty.com](https://twenty.com) for hosted
+options and [docs](https://twenty.com/developers) for developer
+documentation. This project is not affiliated with or endorsed by Twenty —
+it's an independent integration.
 
 ## What's in here
 
@@ -15,9 +23,10 @@ simpler auth (Twenty uses long-lived workspace API keys with no refresh).
   `bearerAuth` security scheme, so no pre-generation patching is needed.
 - `server/` — the generated TypeScript MCP server, with one local edit:
   - Fixes a TS type narrowing bug on `response.headers['content-type']`
-    (same fix as the Bigcapital integration).
-- `.mcp.json` — Claude Code project-scope MCP config pointing at
-  `server/run.sh`.
+    in the generated code.
+- `.mcp.json.example` — template for the Claude Code project-scope MCP
+  config pointing at `server/run.sh`. Copy to `.mcp.json` (gitignored) and
+  set the absolute path for your checkout.
 
 ## Setup
 
@@ -25,7 +34,7 @@ Prereqs: Node.js 20+, a running Twenty CRM instance you can reach over HTTP.
 
 ```bash
 git clone <this-repo>
-cd twenty-integration/server
+cd twenty-mcp/server
 npm install
 npm run build
 ```
@@ -56,7 +65,7 @@ Edit `claude_desktop_config.json`:
   "mcpServers": {
     "twenty": {
       "command": "node",
-      "args": ["/absolute/path/to/twenty-integration/server/build/index.js"],
+      "args": ["/absolute/path/to/twenty-mcp/server/build/index.js"],
       "env": {
         "API_BASE_URL": "http://<your-twenty-host>:3000/rest",
         "BEARER_TOKEN_BEARERAUTH": "<your API key>"
@@ -70,8 +79,9 @@ Fully restart Claude Desktop (Cmd-Q on Mac) so the MCP subprocess respawns.
 
 ### Claude Code
 
-The project-scoped `.mcp.json` is already in this repo. From this dir Claude
-Code picks it up automatically. You'll still need `server/.env` populated.
+Copy `.mcp.json.example` to `.mcp.json` and replace the placeholder with the
+absolute path to `server/run.sh` in your checkout. From this dir Claude Code
+picks it up automatically. You'll still need `server/.env` populated.
 
 ## Regenerating
 
@@ -85,16 +95,16 @@ curl -sS -H "Authorization: Bearer $BEARER_TOKEN_BEARERAUTH" \
 # Regenerate (will overwrite local patches in src/index.ts)
 npx openapi-mcp-generator@latest -i ./openapi.json -o ./server -n twenty-mcp --force
 
-# Re-apply the content-type narrowing fix (see commit history)
+# Re-apply the content-type narrowing fix in server/src/index.ts
 cd server && npm install && npm run build
 ```
 
-## Differences from the Bigcapital MCP
+## Design notes
 
 - **Auth**: Twenty's API key is long-lived (decades). No signin/refresh code
   needed — the generator's default `BEARER_TOKEN_BEARERAUTH` env var handling
   is all that's wired up.
 - **Workspace scoping**: Twenty encodes the workspace in the API key JWT, so
-  there's no equivalent of Bigcapital's `organization-id` header.
+  no extra workspace/organization header is required per request.
 - **Spec patching**: Twenty already publishes `servers` and `securitySchemes`
-  in its OpenAPI; Bigcapital did not, so no `jq` patch step is needed here.
+  in its OpenAPI, so the spec works with the generator unmodified.

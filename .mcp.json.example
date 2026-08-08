@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "twenty": {
+      "command": "/absolute/path/to/twenty-mcp/server/run.sh"
+    }
+  }
+}
